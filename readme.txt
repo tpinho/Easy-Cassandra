@@ -1,7 +1,44 @@
 Easy-Cassandra
 
-Easily programming with this framework, the Easy Cassandra
-The EasyCassandra uses the Thrift implementation and has like the main objective be one simple ORM( Object relational manager). It need the jdk 7 for run, because some parts in your code was replaced reflection for invoke dynamic. So will have a behavior faster than other framework.
+Easily programming with this framework, the Easy Cassandra.
+The EasyCassandra uses the Cassandra Driver and has as main objective to be a simple ORM( Object relational manager). 
+
+Version: 2.0.1
+* read faster
+* write faster
+* constructor factory with just one class instead many parameters
+* BatchQuery
+* DeleteQuery
+* InsertQuery
+* SelectQuery
+* UpdateQuery
+* supports to asynchronous process with callBack
+
+
+Version: 2.0.0
+* Complex rowkey (a key with tow or more keyrow).
+* Map some collections (java.util.List, java.util.Set, java.util.Map).
+* Find automatically the others clusters which do part of the same cluster.	
+* Objects may use a different keyspace using schema.	
+* Custom storage way with CustomData annotation.
+* supports multiple index
+* New annotation @ElementCollection to java.util.List, java.util.Set and java.util.Map.
+* Factory with credentials
+
+
+Version: 1.1.2
+* use different keyspace with schema
+
+Version: 1.1.1
+* when you insert or merge you don't need to cast to your object
+* refactoring messages errors
+
+Version: 1.1.0
+* Client for many Client in sequencial mode
+* Client for many Client in sequencial random
+* DownGrade to java 6
+* create keyspace automatically
+* do single client
 
 Version: 1.0.9
 
@@ -31,8 +68,8 @@ Version: 1.0.5
 Version: 1.0.4
 * more performance
 * less memory
-* now is supported all primitives types
-* now is supported Byte, character, Short, BigInteger and BigDecimal
+* now, all primitives types are supported 
+* now, Byte, character, Short, BigInteger and BigDecimal are supported 
 
 Version: 1.0.3
 * Fixes bug with result
@@ -41,10 +78,10 @@ Version: 1.0.3
 
 Version: 1.0.2
 * Fixes bug with Boolean's Object
-* Now the Cassandra's lib is supported this way is possible use every Cassandra above of the version 0.8.0
+* Now the Cassandra's lib is supported. In this way is possible to use every Cassandra above of the version 0.8.0
 
 Version: 1.0.1
 Modifications
-* Allowed use ColumnValue and ColumnFamilyValue in default mode this way its get the field's name
+* Allowed use ColumnValue and ColumnFamilyValue in default mode. In this way, it gets the field's name
 * Fixes bug in Reflection
 * Auto-Increment saved in XML Document

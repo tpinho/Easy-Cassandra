@@ -1,31 +1,30 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.easycassandra.bean.model;
 
 import java.io.Serializable;
-import java.util.Objects;
+//import java.util.Objects;
 
 import javax.persistence.Column;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
- *
- * não é necessário colocar nenhuma identificação na classe
+ * Address DTO.
  */
 public class Address implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
-    @Column(name="state")
+
+    @Column(name = "state")
     private String state;
-    
-    @Column(name="cyte")
+
+    @Column(name = "cyte")
     private String city;
-    
-    @Column(name="street")
+
+    @Column(name = "street")
     private String street;
-    
-    @Column(name="cep")
+
+    @Column(name = "cep")
     private String cep;
 
     public String getCep() {
@@ -60,31 +59,18 @@ public class Address implements Serializable {
         this.state = state;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Address other = (Address) obj;
-        if (!Objects.equals(this.city, other.city)) {
-            return false;
-        }
-        if (!Objects.equals(this.cep, other.cep)) {
-            return false;
-        }
-        return true;
+    	if (obj instanceof Address) {
+    		Address other = Address.class.cast(obj);
+    		return new EqualsBuilder().append(city, other.city).append(cep, other.cep).isEquals();
+    	}
+    	return false;
+
     }
 
+    @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.city);
-        hash = 97 * hash + Objects.hashCode(this.cep);
-        return hash;
+    	return new HashCodeBuilder().append(city).append(cep).toHashCode();
     }
-    
-    
-    
-    
 }

@@ -4,9 +4,7 @@
  */
 package org.easycassandra.bean.model;
 
-import java.io.File;
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -14,34 +12,33 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
-import org.easycassandra.annotations.Index;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.easycassandra.Index;
 
 /**
- *
+ * the person class.
  * @author otavio
  */
 @Entity(name = "person")
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 3L;
-    
+
     @Id
     private Long id;
-    
+
     @Index
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "born")
-    private Integer year;
-    
-    
+    private int year;
+
     @Enumerated
     private Sex sex;
-    
-    @Column(name = "file")
-    private File personalFile;
-    
+
+
     @Embedded
     private Address address;
 
@@ -61,11 +58,11 @@ public class Person implements Serializable {
         this.id = id;
     }
 
-    public Integer getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -85,36 +82,21 @@ public class Person implements Serializable {
         this.sex = sex;
     }
 
-    
-    public File getPersonalFile() {
-		return personalFile;
-	}
 
-	public void setPersonalFile(File personalFile) {
-		this.personalFile = personalFile;
-	}
-
+    @Override
 	public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        if (obj instanceof Person) {
+            Person other = Person.class.cast(obj);
+            return new EqualsBuilder().append(id, other.id).isEquals();
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Person other = (Person) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+
+        return false;
     }
 
+    @Override
     public int hashCode() {
-        int hash = 3;
-        return 97 * hash + Objects.hashCode(this.id);
-        
+        return new HashCodeBuilder().append(id).toHashCode();
+
     }
-    
-    
-    
-    
+
 }

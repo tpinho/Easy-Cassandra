@@ -14,167 +14,76 @@
  */
 package org.easycassandra.util;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The class does getter and setter with invoke Dynamic
- *
+ * The class does getter, setter and util for reflection.
  * @author otavio
  */
-public final class ReflectionUtil {
+public enum ReflectionUtil {
+
+	INSTANCE;
 
     /**
-     * class of primitives types
-     */
-    private static Class[] primitivesClass = {int.class, long.class,
-        float.class, double.class, boolean.class};
-
-    /**
-     * Return The Object from the Field
-     *
-     * @param object
-     * @param field
+     * Return The Object from the Field.
+     * @param object the object
+     * @param field  the field to return object
      * @return - the field value in Object
      */
-    public static Object getMethod(Object object, Field field) {
+    public  Object getMethod(Object object, Field field) {
 
         try {
-            String fieldName = field.getName();
-            MethodType methodType = MethodType.methodType(field.getType());
-            String methodName = "get" + fieldName.substring(0, 1).toUpperCase()
-                    + fieldName.substring(1);
-            MethodHandle methodHandle =
-                    MethodHandles.publicLookup().bind(object, methodName,
-                    methodType);
-            return methodHandle.invoke();
-        } catch (Throwable exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE,
-                    null, exception);
+            return field.get(object);
+        } catch (Exception exception) {
+            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
         }
         return null;
     }
 
     /**
-     * Set the field in the Object
-     *
-     * @param object
-     * @param field
-     * @param value
-     * @return - if the operation was execute with sucess
+     * Set the field in the Object.
+     * @param object the object
+     * @param field  the field to return object
+     * @param value the value to object
+     * @return - if the operation was execute with success
      */
-    public static boolean setMethod(Object object, Field field, Object value) {
+    public boolean setMethod(Object object, Field field, Object value) {
         try {
-            String fieldName = field.getName();
-            MethodType methodType = MethodType.methodType(void.class,
-                    field.getType());
-            String methodName = "set" + fieldName.substring(0, 1).toUpperCase()
-                    + fieldName.substring(1);
-            MethodHandle methodHandle = MethodHandles.publicLookup().bind(object,
-                    methodName, methodType);
-            MethodHandle printer = MethodHandles.insertArguments(methodHandle,
-                    0, value);
-            printer.invoke();
-        } catch (Throwable exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE,
-                    null, exception);
+
+            field.set(object, value);
+
+        } catch (Exception exception) {
+            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
             return false;
         }
         return true;
     }
 
     /**
-     * method for use the value Of of the Object, for this the class must be the
-     * static method value of and return a new instance of itself
-     *
-     * @param classValue - the reference of the Class
-     * @param value -the value
-     * @param refence - the Class Reference
-     * @return the instance of the object
-     */
-    public static Object valueOf(Class classValue, Object value, Class refence) {
-        MethodType methodType = MethodType.methodType(classValue, refence);
-        MethodHandle methodHandle;
-        try {
-            if (Arrays.asList(primitivesClass).contains(classValue)) {
-                return valueOfWrapper(classValue, value);
-            }
-            methodHandle = MethodHandles.publicLookup().findStatic(classValue,
-                    "valueOf", methodType);
-            MethodHandle printer = MethodHandles.insertArguments(methodHandle,
-                    0, value);
-
-            return printer.invoke();
-        } catch (Throwable exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE,
-                    null, exception);
-            return null;
-        }
-
-
-    }
-
-    /**
-     * Do whrapper in value of method
-     *
-     * @param classValue - value of the class
-     * @param value - the value of the class
-     * @return - the Object for the primitive type
-     */
-    private static Object valueOfWrapper(Class classValue, Object value) {
-        switch (classValue.getName()) {
-            case "int":
-                return Integer.valueOf(value.toString());
-            case "long":
-                return Long.valueOf(value.toString());
-            case "float":
-                return Float.valueOf(value.toString());
-            case "double":
-                return Double.valueOf(value.toString());
-            case "boolean":
-                return Boolean.valueOf(value.toString());
-        }
-        return value;
-    }
-
-    /**
-     * @see ReflectionUtil#valueOf(Class, Object, Class)
-     * @param classValue
-     * @param value
-     * @return the value of value
-     */
-    public static Object valueOf(Class classValue, Object value) {
-        return valueOf(classValue, value, value.getClass());
-    }
-
-    /**
-     * Create new instance of this class
-     *
-     * @param clazz
+     * Create new instance of this class.
+     * @param clazz the class to create object
      * @return the new instance that class
      */
-    public static Object newInstance(Class<?> clazz) {
+    public Object newInstance(Class<?> clazz) {
         try {
             return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE,
-                    null, exception);
+        } catch (Exception exception) {
+            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
             return null;
         }
     }
 
     /**
-     * find the Field from the name field
-     *
-     * @param string
+     * Find the Field from the name field.
+     * @param string the name of field
+     * @param clazz the class
      * @return the field from the name
      */
-    public static Field getField(String string, Class<?> clazz) {
+    public Field getField(String string, Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
             if (field.getName().equals(string)) {
                 return field;
@@ -184,8 +93,56 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Singleton
+     * returns the generic type of field.
+     * @param field the field
+     * @return a generic type
      */
-    private ReflectionUtil() {
+    public Class<?> getGenericType(Field field) {
+    	ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+        return (Class<?>) genericType.getActualTypeArguments()[0];
+
+    }
+
+    /**
+     * return the key and value of field.
+     * @param field the field
+     * @return the types of the type
+     */
+    public KeyValueClass getGenericKeyValue(Field field) {
+    	ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+    	KeyValueClass keyValueClass = new KeyValueClass();
+    	keyValueClass.keyClass = (Class<?>) genericType.getActualTypeArguments()[0];
+    	keyValueClass.valueClass = (Class<?>) genericType.getActualTypeArguments()[1];
+    	return keyValueClass;
+    }
+
+    /**
+     * data struteded to store key and value class to map collection.
+     * @author otaviojava
+     */
+    public class KeyValueClass {
+    	private Class<?> keyClass;
+    	private Class<?> valueClass;
+		public Class<?> getKeyClass() {
+			return keyClass;
+		}
+		public Class<?> getValueClass() {
+			return valueClass;
+		}
+
+    }
+    /**
+     *  Make the given field accessible, explicitly setting it accessible
+     *  if necessary. The setAccessible(true) method is only
+     *  called when actually necessary, to avoid unnecessary
+     *   conflicts with a JVM SecurityManager (if active).
+     *  @param field field the field to make accessible
+     */
+    public void makeAccessible(Field field) {
+        if ((!Modifier.isPublic(field.getModifiers()) || !Modifier
+                .isPublic(field.getDeclaringClass().getModifiers()))
+                && !field.isAccessible()) {
+            field.setAccessible(true);
+        }
     }
 }

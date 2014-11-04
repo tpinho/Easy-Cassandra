@@ -4,24 +4,36 @@ import junit.framework.Assert;
 import org.easycassandra.bean.dao.PersistenceDao;
 import org.easycassandra.bean.model.Engineer;
 import org.junit.Test;
-
+/**
+ * EngineerDao test.
+ * @author otaviojava
+ */
 public class EngineerDaoTest {
 
-    private PersistenceDao<Engineer> dao = new PersistenceDao<>(Engineer.class);
-
+    private static final double SALARY = 34D;
+    private PersistenceDao<Engineer, String> dao = new PersistenceDao<Engineer, String>(
+            Engineer.class);
+    /**
+     * run the test.
+     */
     @Test
     public void persistTest() {
         Assert.assertTrue(dao.insert(getEngineer()));
 
     }
-
+    /**
+     * run the test.
+     */
     @Test
     public void retrieveTest() {
-        Assert.assertNotNull(dao.retrieve(getEngineer().getNickName()));
+        Engineer engineer = dao.retrieve(getEngineer().getNickName());
+        Assert.assertNotNull(engineer);
     }
-
+    /**
+     * run the test.
+     */
     @Test
-    public void retriveDadAtribute() {
+    public void retrieveDadAttribute() {
         Assert.assertNotNull(dao.retrieve(getEngineer().getNickName()));
     }
 
@@ -31,7 +43,7 @@ public class EngineerDaoTest {
         engineer.setEspecialization("computer");
         engineer.setName("Alex");
         engineer.setType("eletric");
-        engineer.setSalary(34d);
+        engineer.setSalary(SALARY);
         return engineer;
     }
 }
